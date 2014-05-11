@@ -1,0 +1,21 @@
+plot3 <- function() {
+  myfile <- read.table(file="household_power_consumption.txt", header=TRUE, sep=";", na.strings="?")
+  mydate1 <- strptime("01/02/2007", format='%d/%m/%Y')
+  mydate2 <- strptime("02/02/2007", format='%d/%m/%Y')
+  myfile <- subset(myfile, strptime(myfile$Date, format='%d/%m/%Y')>=mydate1 & strptime(myfile$Date, format='%d/%m/%Y')<=mydate2)
+  Sys.getlocale("LC_TIME")
+  Sys.setlocale("LC_TIME", "en_US.utf8")
+  myfile$DateTime <- strptime(paste(myfile$Date, myfile$Time), format='%d/%m/%Y %H:%M:%S')
+  png(file="plot4.png",width=480,height=480)
+  par(mfrow=c(2,2))
+  plot(myfile$DateTime, myfile$Global_active_power/1000,type="l", ylab="Global Active Power (kilowatts)", xlab="", main="")
+  plot(myfile$DateTime, myfile$Voltage/1000 ,type="l", ylab="Voltage", xlab="Datetime", main="")
+  plot(myfile$DateTime, myfile$Sub_metering_1/1000 ,type="l", ylab="Energy sub metering", xlab="datetime", main="")
+  lines(myfile$DateTime, myfile$Sub_metering_2/1000 ,type="l", col="red")
+  lines(myfile$DateTime, myfile$Sub_metering_3/1000 ,type="l", col="blue")
+  legend("topright", lty = 1, col = c("black", "blue", "red"), legend=c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), box.lwd = 0,box.col = "white")
+  plot(myfile$DateTime, myfile$Global_reactive_power/1000,type="l", ylab="Global Reactive Power", xlab="datetime", main="")
+  dev.off()
+}
+
+plot3()
